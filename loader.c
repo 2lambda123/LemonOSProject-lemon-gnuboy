@@ -112,21 +112,16 @@ static void initmem(void *mem, int size)
 
 static byte *loadfile(FILE *f, int *len)
 {
-	int c, l = 0, p = 0;
-	byte *d = 0, buf[512];
+	fseek(f, 0, SEEK_END);
+	int _len = ftell(f);
+	fseek(f, 0, SEEK_SET);
 
-	for(;;)
-	{
-		c = fread(buf, 1, sizeof buf, f);
-		if (c <= 0) break;
-		l += c;
-		d = realloc(d, l);
-		if (!d) return 0;
-		memcpy(d+p, buf, c);
-		p += c;
-	}
-	*len = l;
-	return d;
+	*len = _len;
+
+	uint8_t* buf = malloc(_len);
+	fread(buf, _len, 1, f);
+
+	return buf;
 }
 
 static byte *inf_buf;
@@ -410,11 +405,15 @@ void loader_init(char *s)
 {
 	char *name, *p;
 
+	#ifndef __lemon__
 	sys_checkdir(savedir, 1); /* needs to be writable */
+	#endif
 
 	romfile = s;
 	rom_load();
 	vid_settitle(rom.name);
+
+	#ifndef __lemon__
 	if (savename && *savename)
 	{
 		if (savename[0] == '-' && savename[1] == 0)
@@ -442,6 +441,7 @@ void loader_init(char *s)
 	
 	sram_load();
 	rtc_load();
+	#endif
 
 	atexit(cleanup);
 }

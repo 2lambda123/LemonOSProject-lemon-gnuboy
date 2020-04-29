@@ -210,7 +210,8 @@ void loadstate(FILE *f)
 }
 
 void savestate(FILE *f)
-{
+{	
+	#ifndef __lemon__ // Read only filesystem
 	int i;
 	byte buf[4096];
 	un32 (*header)[2] = (un32 (*)[2])buf;
@@ -264,6 +265,7 @@ void savestate(FILE *f)
 	
 	fseek(f, sramblock<<12, SEEK_SET);
 	fwrite(ram.sbank, 4096, srl, f);
+	#endif
 }
 
 

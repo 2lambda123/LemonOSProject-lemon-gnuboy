@@ -14,7 +14,7 @@
 #include "cpu.h"
 
 
-static int framelen = 16743;
+static int framelen = 13952;//16743;
 static int framecount;
 
 rcvar_t emu_exports[] =
@@ -69,6 +69,7 @@ void *sys_timer();
 
 void emu_run()
 {
+	printf("running\n");
 	void *timer = sys_timer();
 	int delay;
 
@@ -94,7 +95,7 @@ void emu_run()
 		if (framecount) { if (!--framecount) die("finished\n"); }
 		
 		if (!(R_LCDC & 0x80))
-			cpu_emulate(32832);
+			cpu_emulate(/*32832*/278616);
 		
 		while (R_LY > 0) /* wait for next frame */
 			emu_step();

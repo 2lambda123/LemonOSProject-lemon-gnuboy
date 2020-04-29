@@ -30,6 +30,10 @@ SDL_OBJS = sys/sdl/sdl.o sys/sdl/sdl-audio.o sys/sdl/keymap.o
 SDL_LIBS = @SDL_LIBS@
 SDL_CFLAGS = @SDL_CFLAGS@
 
+LEMON_OBJS = sys/lemon/lemon.o sys/lemon/video.o sys/pc/keymap.o
+LEMON_LIBS = -llemon -lfreetype -lstdc++
+LEMON_CFLAGS = -std=c++14
+
 X11_OBJS = sys/x11/xlib.o sys/x11/keymap.o @JOY@ @SOUND@
 X11_LIBS = @XLIBS@ -lX11 -lXext
 
@@ -54,6 +58,15 @@ sys/sdl/keymap.o: sys/sdl/keymap.c
 
 xgnuboy: $(OBJS) $(SYS_OBJS) $(X11_OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) $(SYS_OBJS) $(X11_OBJS) -o $@ $(X11_LIBS)
+
+lemongnuboy: $(OBJS) $(SYS_OBJS) $(LEMON_OBJS)
+	$(LD) $(LDFLAGS) $(OBJS) $(SYS_OBJS) $(LEMON_OBJS) -o $@ $(LEMON_LIBS)
+
+sys/lemon/video.o: sys/lemon/video.cpp
+	x86_64-lemon-g++ $(MY__) $(LEMON_CFLAGS) -c $< -o $@
+	
+sys/lemon/lemon.o: sys/lemon/lemon.c
+	$(MYCC) $(LEMON_CFLAGS) -c $< -o $@
 
 joytest: joytest.o @JOY@
 	$(LD) $(LDFLAGS) $^ -o $@

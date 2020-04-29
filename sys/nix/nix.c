@@ -45,6 +45,8 @@ void *sys_timer()
 	return tv;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
 int sys_elapsed(struct timeval *prev)
 {
 	struct timeval tv;
@@ -57,6 +59,7 @@ int sys_elapsed(struct timeval *prev)
 	if (!secs) return usecs;
 	return 1000000 + usecs;
 }
+#pragma GCC pop_options
 
 void sys_sleep(int us)
 {
@@ -70,6 +73,7 @@ void sys_sleep(int us)
 
 void sys_checkdir(char *path, int wr)
 {
+	#ifndef __lemon__
 	char *p;
 	if (access(path, X_OK | (wr ? W_OK : 0)))
 	{
@@ -83,10 +87,12 @@ void sys_checkdir(char *path, int wr)
 		if (mkdir(path, 0777))
 			die("cannot create %s: %s\n", path, strerror(errno));
 	}
+	#endif
 }
 
 void sys_initpath()
 {
+	#ifndef __lemon__
 	char *buf, *home = getenv("HOME");
 	if (!home)
 	{
@@ -101,6 +107,7 @@ void sys_initpath()
 	sprintf(buf, "%s/" DOTDIR "/saves" , home);
 	rc_setvar("savedir", 1, &buf);
 	free(buf);
+	#endif
 }
 
 void sys_sanitize(char *s)

@@ -30,6 +30,7 @@ LIBS="$LIBS -L/usr/local/lib -L/usr/X11R6/lib"
 AC_ARG_WITH(fb,      [  --with-fb               build framebuffer device interface], [], [with_fb=yes])
 AC_ARG_WITH(svgalib, [  --with-svgalib          build Linux svgalib interface], [], [with_svgalib=yes])
 AC_ARG_WITH(sdl,     [  --with-sdl              build SDL interface], [], [with_sdl=yes])
+AC_ARG_WITH(lemon,   [  --with-lemon            build Lemon OS interface], [], [with_lemon=yes])
 
 
 
@@ -112,6 +113,7 @@ test "$with_x" = "no" || TARGETS="$TARGETS xgnuboy"
 test "$with_fb" = "no" || TARGETS="$TARGETS fbgnuboy"
 test "$with_svgalib" = "no" || TARGETS="$TARGETS sgnuboy"
 test "$with_sdl" = "no" || TARGETS="$TARGETS sdlgnuboy"
+test "$with_lemon" = "no" || TARGETS="$TARGETS lemongnuboy"
 
 
 
@@ -133,7 +135,7 @@ AC_ARG_ENABLE(asm,      [  --enable-asm            use hand-optimized asm cores]
 if test "$enable_warnings" = yes ; then
 case "$CC" in *gcc*)
 AC_MSG_RESULT(enabling selected compiler warnings)
-CFLAGS="$CFLAGS -ansi -pedantic -Wall" ;;
+CFLAGS="$CFLAGS -pedantic -Wall" ;;
 *)
 AC_MSG_RESULT(disabling warnings for non-gcc compiler) ;;
 esac

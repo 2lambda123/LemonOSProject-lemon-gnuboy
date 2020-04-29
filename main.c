@@ -38,6 +38,7 @@ static char *defaultconfig[] =
 	"bind joy1 +a",
 	"bind joy2 +select",
 	"bind joy3 +start",
+#ifndef __lemon__
 	"bind 1 \"set saveslot 1\"",
 	"bind 2 \"set saveslot 2\"",
 	"bind 3 \"set saveslot 3\"",
@@ -51,6 +52,7 @@ static char *defaultconfig[] =
 	"bind ins savestate",
 	"bind del loadstate",
 	"source gnuboy.rc",
+#endif
 	NULL
 };
 
@@ -218,20 +220,29 @@ int main(int argc, char *argv[])
 		else rom = argv[i];
 	}
 	
+	#ifndef __lemon__
 	if (!rom) usage(base(argv[0]));
+	#else
+	if(!rom) rom = "mario.gbc";/*filedialog();*/
+	if(!rom) usage(base(argv[0]));
+	#endif
 
 	/* If we have special perms, drop them ASAP! */
 	vid_preinit();
 
 	init_exports();
 
+	#ifndef __lemon__
 	s = strdup(argv[0]);
 	sys_sanitize(s);
 	sys_initpath(s);
+	#endif
 
 	for (i = 0; defaultconfig[i]; i++)
 		rc_command(defaultconfig[i]);
+	printf("rc_command");
 
+	#ifndef __lemon__
 	cmd = malloc(strlen(rom) + 11);
 	sprintf(cmd, "source %s", rom);
 	s = strchr(cmd, '.');
@@ -294,6 +305,8 @@ int main(int argc, char *argv[])
 	/* FIXME - make interface modules responsible for atexit() */
 	atexit(shutdown);
 	catch_signals();
+	#endif
+
 	vid_init();
 	pcm_init();
 
