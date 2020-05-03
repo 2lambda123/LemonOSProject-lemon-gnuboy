@@ -11,7 +11,7 @@ extern "C"{
 	#include "defs.h"
 }
 
-Window* win;
+Lemon::GUI::Window* win;
 win_info_t winInfo;
 surface_t fbSurf;
 
@@ -34,7 +34,7 @@ struct fb fb;
 extern "C"{
 
 	char* filedialog(){
-		return FileDialog("/initrd");
+		return Lemon::GUI::FileDialog("/initrd");
 	}
 
 	/* keymap - mappings of the form { scancode, localcode } - from pc/keymap.c */
@@ -82,8 +82,8 @@ extern "C"{
 		printf("gnuboy: Creating Window...");
 
 		winInfo.x = winInfo.y = 60;
-		win = CreateWindow(&winInfo);
-		SwapWindowBuffers(win);
+		win = Lemon::GUI::CreateWindow(&winInfo);
+		Lemon::GUI::SwapWindowBuffers(win);
 
 		fbSurf.buffer = fb.ptr = win->surface.buffer;
 		fbSurf = win->surface;
@@ -91,18 +91,18 @@ extern "C"{
 
 	void vid_close()
 	{
-		DestroyWindow(win);
+		Lemon::GUI::DestroyWindow(win);
 	}
 
 	void vid_settitle(char *title)
 	{
 		strcpy(win->info.title, title);
-		UpdateWindow(win);
+		Lemon::GUI::UpdateWindow(win);
 	}
 
 	void vid_begin()
 	{
-		SwapWindowBuffers(win);
+		Lemon::GUI::SwapWindowBuffers(win);
 		fbSurf.buffer = fb.ptr = win->surface.buffer;
 		fbSurf = win->surface;
 	}
@@ -126,7 +126,7 @@ extern "C"{
 	void ev_poll()
 	{
 		ipc_message_t msg;
-		while(ReceiveMessage(&msg)){
+		while(Lemon::ReceiveMessage(&msg)){
 			if(msg.msg == WINDOW_EVENT_KEY){
 				event_t ev;
 				ev.type = EV_PRESS;

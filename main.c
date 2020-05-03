@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
 	#ifndef __lemon__
 	if (!rom) usage(base(argv[0]));
 	#else
-	if(!rom) rom = "mario.gbc";/*filedialog();*/
+	if(!rom) rom = filedialog();
 	if(!rom) usage(base(argv[0]));
 	#endif
 

@@ -1,41 +1,41 @@
 
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-bindir = @bindir@
+prefix = /usr/local
+exec_prefix = ${prefix}
+bindir = ${exec_prefix}/bin
 
-CC = @CC@
+CC = x86_64-lemon-gcc
 LD = $(CC)
 AS = $(CC)
-INSTALL = @INSTALL@
+INSTALL = /usr/bin/install -c
 
-CFLAGS = @CFLAGS@
-LDFLAGS = $(CFLAGS) @LDFLAGS@
+CFLAGS =  -pedantic -Wall -O3 -fstrength-reduce -fthread-jumps  -fcse-follow-jumps -fcse-skip-blocks -frerun-cse-after-loop  -fexpensive-optimizations -fforce-addr -fomit-frame-pointer
+LDFLAGS = $(CFLAGS)  -s
 ASFLAGS = $(CFLAGS)
 
-TARGETS = @TARGETS@
+TARGETS =  lemongnuboy
 
-ASM_OBJS = @ASM_OBJS@
+ASM_OBJS = 
 
-SYS_DEFS = @DEFS@ @ENDIAN@ @ASM@ @SYS_DEFS@
+SYS_DEFS = -DHAVE_CONFIG_H -DIS_LITTLE_ENDIAN  -DIS_LINUX
 SYS_OBJS = sys/nix/nix.o $(ASM_OBJS)
-SYS_INCS = -I/usr/local/include @XINCS@ -I./sys/nix
+SYS_INCS = -I/usr/local/include  -I./sys/nix
 
-FB_OBJS = @FB_OBJS@ @JOY@ @SOUND@
+FB_OBJS =  sys/dummy/nojoy.o sys/dummy/nosound.o
 FB_LIBS = 
 
-SVGA_OBJS = sys/svga/svgalib.o sys/pc/keymap.o @JOY@ @SOUND@
+SVGA_OBJS = sys/svga/svgalib.o sys/pc/keymap.o sys/dummy/nojoy.o sys/dummy/nosound.o
 SVGA_LIBS = -L/usr/local/lib -lvga
 
 SDL_OBJS = sys/sdl/sdl.o sys/sdl/sdl-audio.o sys/sdl/keymap.o
-SDL_LIBS = @SDL_LIBS@
-SDL_CFLAGS = @SDL_CFLAGS@
+SDL_LIBS = 
+SDL_CFLAGS = 
 
 LEMON_OBJS = sys/lemon/lemon.o sys/lemon/video.o sys/pc/keymap.o
 LEMON_LIBS = -llemon -lfreetype -lstdc++ -lpng -lz 
 LEMON_CFLAGS = -std=c++14
 
-X11_OBJS = sys/x11/xlib.o sys/x11/keymap.o @JOY@ @SOUND@
-X11_LIBS = @XLIBS@ -lX11 -lXext
+X11_OBJS = sys/x11/xlib.o sys/x11/keymap.o sys/dummy/nojoy.o sys/dummy/nosound.o
+X11_LIBS =  -lX11 -lXext
 
 all: $(TARGETS)
 
@@ -68,7 +68,7 @@ sys/lemon/video.o: sys/lemon/video.cpp
 sys/lemon/lemon.o: sys/lemon/lemon.c
 	$(MYCC) $(LEMON_CFLAGS) -c $< -o $@
 
-joytest: joytest.o @JOY@
+joytest: joytest.o sys/dummy/nojoy.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
 install: all
