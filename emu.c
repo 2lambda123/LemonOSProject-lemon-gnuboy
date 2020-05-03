@@ -14,7 +14,7 @@
 #include "cpu.h"
 
 
-static int framelen = 13952;//16743;
+static int framelen = 16743;
 static int framecount;
 
 rcvar_t emu_exports[] =
