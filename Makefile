@@ -1,5 +1,5 @@
 
-prefix = /usr/local
+prefix = /system
 exec_prefix = ${prefix}
 bindir = ${exec_prefix}/bin
 
@@ -12,13 +12,13 @@ CFLAGS =  -pedantic -Wall -O3 -fstrength-reduce -fthread-jumps  -fcse-follow-jum
 LDFLAGS = $(CFLAGS)  -s
 ASFLAGS = $(CFLAGS)
 
-TARGETS =  lemongnuboy
+TARGETS =  xgnuboy lemongnuboy
 
 ASM_OBJS = 
 
 SYS_DEFS = -DHAVE_CONFIG_H -DIS_LITTLE_ENDIAN  -DIS_LINUX
 SYS_OBJS = sys/nix/nix.o $(ASM_OBJS)
-SYS_INCS = -I/usr/local/include  -I./sys/nix
+SYS_INCS = -I./sys/nix
 
 FB_OBJS =  sys/dummy/nojoy.o sys/dummy/nosound.o
 FB_LIBS = 
@@ -27,15 +27,15 @@ SVGA_OBJS = sys/svga/svgalib.o sys/pc/keymap.o sys/dummy/nojoy.o sys/dummy/nosou
 SVGA_LIBS = -L/usr/local/lib -lvga
 
 SDL_OBJS = sys/sdl/sdl.o sys/sdl/sdl-audio.o sys/sdl/keymap.o
-SDL_LIBS = 
-SDL_CFLAGS = 
+SDL_LIBS = -L/usr/lib -lSDL -lpthread
+SDL_CFLAGS = -I/usr/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
 
 LEMON_OBJS = sys/lemon/lemon.o sys/lemon/video.o sys/pc/keymap.o
 LEMON_LIBS = -llemon -lfreetype -lstdc++ -lpng -lz 
 LEMON_CFLAGS = -std=c++14
 
 X11_OBJS = sys/x11/xlib.o sys/x11/keymap.o sys/dummy/nojoy.o sys/dummy/nosound.o
-X11_LIBS =  -lX11 -lXext
+X11_LIBS = -L/usr/lib -lX11 -lXext
 
 all: $(TARGETS)
 

@@ -405,15 +405,12 @@ void loader_init(char *s)
 {
 	char *name, *p;
 
-	#ifndef __lemon__
 	sys_checkdir(savedir, 1); /* needs to be writable */
-	#endif
-
+    
 	romfile = s;
 	rom_load();
 	vid_settitle(rom.name);
 
-	#ifndef __lemon__
 	if (savename && *savename)
 	{
 		if (savename[0] == '-' && savename[1] == 0)
@@ -441,7 +438,6 @@ void loader_init(char *s)
 	
 	sram_load();
 	rtc_load();
-	#endif
 
 	atexit(cleanup);
 }

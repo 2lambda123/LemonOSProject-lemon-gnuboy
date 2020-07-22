@@ -1,7 +1,6 @@
-#include <gfx/window/window.h>
-#include <lemon/ipc.h>
-#include <lemon/keyboard.h>
-#include <gfx/window/filedialog.h>
+#include <gui/window.h>
+#include <core/keyboard.h>
+#include <gui/filedialog.h>
 #include <stdio.h>
 
 extern "C"{
@@ -12,7 +11,6 @@ extern "C"{
 }
 
 Lemon::GUI::Window* win;
-win_info_t winInfo;
 surface_t fbSurf;
 
 rcvar_t vid_exports[] =
@@ -34,7 +32,7 @@ struct fb fb;
 extern "C"{
 
 	char* filedialog(){
-		return Lemon::GUI::FileDialog("/initrd");
+		return Lemon::GUI::FileDialog("/system");
 	}
 
 	/* keymap - mappings of the form { scancode, localcode } - from pc/keymap.c */
@@ -58,8 +56,8 @@ extern "C"{
 
 	void vid_init()
 	{
-		fbSurf.width = fb.w = winInfo.width = 160;
-		fbSurf.height = fb.h = winInfo.height = 144;
+		fbSurf.width = fb.w = 160;
+		fbSurf.height = fb.h = 144;
 		fb.pelsize = 4;
 		fb.pitch = fb.w * fb.pelsize;
 		fb.enabled = 1;
@@ -81,9 +79,8 @@ extern "C"{
 
 		printf("gnuboy: Creating Window...");
 
-		winInfo.x = winInfo.y = 60;
-		win = Lemon::GUI::CreateWindow(&winInfo);
-		Lemon::GUI::SwapWindowBuffers(win);
+		win = new Lemon::GUI::Window("Gnuboy", {160, 144}, Lemon::GUI::WindowType::Basic);
+		win->Paint();
 
 		fbSurf.buffer = fb.ptr = win->surface.buffer;
 		fbSurf = win->surface;
@@ -91,18 +88,17 @@ extern "C"{
 
 	void vid_close()
 	{
-		Lemon::GUI::DestroyWindow(win);
+		delete win;
 	}
 
 	void vid_settitle(char *title)
 	{
-		strcpy(win->info.title, title);
-		Lemon::GUI::UpdateWindow(win);
+		win->SetTitle(title);
 	}
 
 	void vid_begin()
 	{
-		Lemon::GUI::SwapWindowBuffers(win);
+		win->Paint();
 		fbSurf.buffer = fb.ptr = win->surface.buffer;
 		fbSurf = win->surface;
 	}
@@ -125,27 +121,29 @@ extern "C"{
 
 	void ev_poll()
 	{
-		ipc_message_t msg;
-		while(Lemon::ReceiveMessage(&msg)){
-			if(msg.msg == WINDOW_EVENT_KEY){
+		Lemon::LemonEvent event;
+		while(win->PollEvent(event)){
+			if(event.event == Lemon::EventKeyPressed){
 				event_t ev;
 				ev.type = EV_PRESS;
-				ev.code = msg.data;
-				if(msg.data == KEY_ARROW_UP) ev.code = K_UP;
-				if(msg.data == KEY_ARROW_DOWN) ev.code = K_DOWN;
-				if(msg.data == KEY_ARROW_LEFT) ev.code = K_LEFT;
-				if(msg.data == KEY_ARROW_RIGHT) ev.code = K_RIGHT;
+				ev.code = event.key;
+				if(event.key == KEY_ARROW_UP) ev.code = K_UP;
+				if(event.key == KEY_ARROW_DOWN) ev.code = K_DOWN;
+				if(event.key == KEY_ARROW_LEFT) ev.code = K_LEFT;
+				if(event.key == KEY_ARROW_RIGHT) ev.code = K_RIGHT;
 				ev_postevent(&ev);
-			} else if(msg.msg == WINDOW_EVENT_KEYRELEASED){
+			} else if(event.event == Lemon::EventKeyReleased){
 				event_t ev;
 				ev.type = EV_RELEASE;
-				ev.code = msg.data;
-				if(msg.data == KEY_ARROW_UP) ev.code = K_UP;
-				if(msg.data == KEY_ARROW_DOWN) ev.code = K_DOWN;
-				if(msg.data == KEY_ARROW_LEFT) ev.code = K_LEFT;
-				if(msg.data == KEY_ARROW_RIGHT) ev.code = K_RIGHT;
+				ev.code = event.key;
+				if(event.key == KEY_ARROW_UP) ev.code = K_UP;
+				if(event.key == KEY_ARROW_DOWN) ev.code = K_DOWN;
+				if(event.key == KEY_ARROW_LEFT) ev.code = K_LEFT;
+				if(event.key == KEY_ARROW_RIGHT) ev.code = K_RIGHT;
 				ev_postevent(&ev);
-			}
+			} else if(event.event == Lemon::EventWindowClosed){
+                exit(0);
+            }
 		}
 	}
 }
