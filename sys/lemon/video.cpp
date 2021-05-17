@@ -1,6 +1,6 @@
-#include <gui/window.h>
-#include <core/keyboard.h>
-#include <gui/filedialog.h>
+#include <Lemon/GUI/Window.h>
+#include <Lemon/Core/Keyboard.h>
+#include <Lemon/GUI/FileDialog.h>
 #include <stdio.h>
 
 extern "C"{

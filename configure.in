@@ -209,9 +209,7 @@ esac
 
 #case `$CC --version` in
 #2.9*|3.*)
-CFLAGS="$CFLAGS -fstrength-reduce -fthread-jumps \
- -fcse-follow-jumps -fcse-skip-blocks -frerun-cse-after-loop \
- -fexpensive-optimizations -fforce-addr"
+CFLAGS="$CFLAGS -fforce-addr"
 #;;
 #*)
 #AC_MSG_WARN(your compiler is too old for fancy optimizations)

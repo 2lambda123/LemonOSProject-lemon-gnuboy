@@ -32,7 +32,7 @@ SDL_CFLAGS = @SDL_CFLAGS@
 
 LEMON_OBJS = sys/lemon/lemon.o sys/lemon/video.o sys/pc/keymap.o
 LEMON_LIBS = -llemon -lfreetype -lstdc++ -lpng -lz 
-LEMON_CFLAGS = -std=c++14
+LEMON_CFLAGS =
 
 X11_OBJS = sys/x11/xlib.o sys/x11/keymap.o @JOY@ @SOUND@
 X11_LIBS = @XLIBS@ -lX11 -lXext
@@ -63,7 +63,7 @@ lemongnuboy: $(OBJS) $(SYS_OBJS) $(LEMON_OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) $(SYS_OBJS) $(LEMON_OBJS) -o $@ $(LEMON_LIBS)
 
 sys/lemon/video.o: sys/lemon/video.cpp
-	x86_64-lemon-g++ $(MY__) $(LEMON_CFLAGS) -c $< -o $@
+	lemon-clang++ $(MY__) $(LEMON_CFLAGS) -c $< -o $@
 	
 sys/lemon/lemon.o: sys/lemon/lemon.c
 	$(MYCC) $(LEMON_CFLAGS) -c $< -o $@
